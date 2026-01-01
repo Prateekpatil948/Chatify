@@ -9,7 +9,7 @@ import messageRoutes from "./routes/message.route.js";
 import { app, server } from "./lib/socket.js";
 
 dotenv.config();
-const PORT = process.env.PORT || 3000; // fallback to 3000
+const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
 // Middleware
@@ -23,18 +23,22 @@ app.use(
   })
 );
 
-// Routes
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 // Serve frontend in production
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  const frontendPath = path.join(__dirname, "../frontend/dist");
+  app.use(express.static(frontendPath));
 
-  // Fix for path-to-regexp error on Render / modern Express
-  app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
+  // Use an Express Router for catch-all to fix PathError
+  const router = express.Router();
+  router.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
   });
+
+  app.use(router);
 }
 
 // Start server
