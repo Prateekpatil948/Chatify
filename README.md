@@ -51,6 +51,7 @@ Chatify/
 │ ├── models/
 │ ├── routes/
 │ ├── socket/
+| ├── .env
 │ └── server.js
 │
 ├── .gitignore
@@ -68,6 +69,9 @@ PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 CLIENT_URL=http://localhost:5173
+CLOUDINARY_CLOUD_NAME 
+CLOUDINARY_API_KEY
+CLOUDINARY_API_SECRET
 
 
 ### Frontend (`frontend/.env`)
@@ -89,6 +93,7 @@ cd Chatify
 cd backend
 npm install
 npm run dev
+
 
 Backend will run on:
 
@@ -114,9 +119,7 @@ Chatify uses Socket.IO for:
 
     Live chat updates without refresh
 
-📸 Screenshots
 
-(Add screenshots here if needed)
 🌐 Live Demo
 
 🔗 https://chatify1-1z7e.onrender.com
