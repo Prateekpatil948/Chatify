@@ -12,8 +12,8 @@ const Sidebar = () => {
     setSelectedUser,
     isUsersLoading,
   } = useChatStore();
-  const { onlineUsers = [] } = useAuthStore();
 
+  const { onlineUsers = [] } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
   useEffect(() => {
@@ -22,25 +22,33 @@ const Sidebar = () => {
 
   const filteredUsers = useMemo(() => {
     if (!showOnlineOnly) return users;
-    return users.filter((user) => onlineUsers.includes(user._id));
+    return users.filter((u) => onlineUsers.includes(u._id));
   }, [users, onlineUsers, showOnlineOnly]);
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="h-full w-20 lg:w-80 border-r border-base-300 bg-base-100/80 backdrop-blur-xl flex flex-col">
+    <aside
+      className="
+        h-full
+        w-16 sm:w-20 lg:w-80
+        border-r border-base-300
+        bg-base-100/80 backdrop-blur-xl
+        flex flex-col
+      "
+    >
       {/* Header */}
-      <div className="sticky top-0 z-10 px-4 py-4 border-b border-base-300 bg-base-100/80 backdrop-blur-xl">
-        <div className="flex items-center gap-3">
+      <div className="sticky top-0 z-10 px-2 sm:px-4 py-3 border-b border-base-300 bg-base-100/80 backdrop-blur-xl">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="p-2 rounded-lg bg-primary/10 text-primary">
-            <Users className="h-5 w-5" />
+            <Users className="h-4 w-4 sm:h-5 sm:w-5" />
           </div>
           <span className="hidden lg:block font-semibold text-lg">
             Contacts
           </span>
         </div>
 
-        {/* Filters */}
+        {/* Filters (desktop only) */}
         <div className="hidden lg:flex items-center justify-between mt-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -61,8 +69,8 @@ const Sidebar = () => {
       {/* User List */}
       <div className="flex-1 overflow-y-auto py-1">
         {filteredUsers.length === 0 && (
-          <p className="text-center text-sm text-zinc-500 mt-6 hidden lg:block">
-            <span className="text-lg text-zinc-500">No One is Online</span>
+          <p className="hidden lg:block text-center text-sm text-zinc-500 mt-6">
+            No one is online
           </p>
         )}
 
@@ -75,12 +83,16 @@ const Sidebar = () => {
               key={user._id}
               onClick={() => setSelectedUser(user)}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 text-left
-                transition-colors duration-200
+                w-full
+                flex items-center
+                gap-2 sm:gap-3
+                px-2 sm:px-4
+                py-2.5 sm:py-3
+                transition-colors
                 hover:bg-base-200
                 ${
                   isSelected
-                    ? "bg-base-200 border-l-4 border-primary pl-3"
+                    ? "bg-base-200 border-l-4 border-primary"
                     : "border-l-4 border-transparent"
                 }
               `}
@@ -90,21 +102,33 @@ const Sidebar = () => {
                 <img
                   src={user.profilePic || "/avatar.png"}
                   alt={user.fullName}
-                  className="h-11 w-11 rounded-full object-cover ring-2 ring-primary/20"
+                  className="
+                    h-9 w-9 sm:h-11 sm:w-11
+                    rounded-full object-cover
+                    ring-2 ring-primary/20
+                  "
                 />
                 <span
-                  className={`absolute bottom-0 right-0 h-3 w-3 rounded-full ring-2 ring-base-100 ${
-                    isOnline ? "bg-green-500" : "bg-gray-400"
-                  }`}
+                  className={`
+                    absolute bottom-0 right-0
+                    h-2.5 w-2.5 sm:h-3 sm:w-3
+                    rounded-full
+                    ring-2 ring-base-100
+                    ${isOnline ? "bg-green-500" : "bg-gray-400"}
+                  `}
                 />
               </div>
 
-              {/* User Info */}
+              {/* User Info (hidden on mobile) */}
               <div className="hidden lg:flex flex-col min-w-0">
-                <span className="font-medium truncate">{user.fullName}</span>
+                <span className="font-medium truncate">
+                  {user.fullName}
+                </span>
                 <span
                   className={`text-xs ${
-                    isOnline ? "text-green-500" : "text-base-content/50"
+                    isOnline
+                      ? "text-green-500"
+                      : "text-base-content/50"
                   }`}
                 >
                   {isOnline ? "Online" : "Offline"}
