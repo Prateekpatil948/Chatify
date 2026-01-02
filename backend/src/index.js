@@ -12,9 +12,12 @@ import { app, server } from "./lib/socket.js";
 
 dotenv.config();
 
-// ✅ ESM-safe __dirname
+// ✅ ESM-safe dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// ✅ MUST be a string
+const frontendPath = path.join(__dirname, "../../frontend/dist");
 
 const PORT = process.env.PORT || 10000;
 
@@ -33,16 +36,15 @@ app.use(
   })
 );
 
-// API routes
+// API routes (MUST come before static)
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-// ✅ Production frontend serving (FIXED PATH)
+// Production frontend serving
 if (process.env.NODE_ENV === "production") {
-  const frontendPath = path.join(__dirname, "../../frontend/dist");
-
   app.use(express.static(frontendPath));
 
+  // ✅ SAFE SPA fallback (no wildcard, no path-to-regexp)
   app.use((req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
@@ -50,6 +52,6 @@ if (process.env.NODE_ENV === "production") {
 
 // Start server
 server.listen(PORT, () => {
-  console.log("Server running on PORT:", PORT);
+  console.log("Server running on port:", PORT);
   connectDB();
 });
