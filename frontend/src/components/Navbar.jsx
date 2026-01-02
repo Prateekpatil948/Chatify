@@ -16,7 +16,7 @@ const Navbar = () => {
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20 group-hover:bg-primary/20 transition">
               <img
-                src="/MyLogo1.png"
+                src="/Chatify.png"
                 alt="Chatify Logo"
                 className="h-6 w-6 object-contain"
               />
