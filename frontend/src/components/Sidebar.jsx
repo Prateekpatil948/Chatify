@@ -28,15 +28,7 @@ const Sidebar = () => {
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside
-      className="
-        h-full
-        w-16 sm:w-20 lg:w-80
-        border-r border-base-300
-        bg-base-100/80 backdrop-blur-xl
-        flex flex-col
-      "
-    >
+    <aside className="h-full w-16 sm:w-20 lg:w-80 border-r border-base-300 bg-base-100/80 backdrop-blur-xl flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-10 px-2 sm:px-4 py-3 border-b border-base-300 bg-base-100/80 backdrop-blur-xl">
         <div className="flex items-center gap-2 sm:gap-3">
@@ -48,7 +40,24 @@ const Sidebar = () => {
           </span>
         </div>
 
-        {/* Filters (desktop only) */}
+        {/* ✅ MOBILE ONLINE BAR */}
+        <div className="flex lg:hidden items-center justify-between mt-2 px-1">
+          <span className="text-xs text-zinc-500">
+            {Math.max(onlineUsers.length - 1, 0)} online
+          </span>
+          <button
+            onClick={() => setShowOnlineOnly((p) => !p)}
+            className={`text-xs px-2 py-1 rounded-full border ${
+              showOnlineOnly
+                ? "bg-primary text-primary-content border-primary"
+                : "border-base-300"
+            }`}
+          >
+            Online
+          </button>
+        </div>
+
+        {/* DESKTOP FILTER */}
         <div className="hidden lg:flex items-center justify-between mt-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -83,13 +92,9 @@ const Sidebar = () => {
               key={user._id}
               onClick={() => setSelectedUser(user)}
               className={`
-                w-full
-                flex items-center
-                gap-2 sm:gap-3
-                px-2 sm:px-4
-                py-2.5 sm:py-3
-                transition-colors
-                hover:bg-base-200
+                w-full flex items-center gap-2 sm:gap-3
+                px-2 sm:px-4 py-2.5 sm:py-3
+                transition-colors hover:bg-base-200
                 ${
                   isSelected
                     ? "bg-base-200 border-l-4 border-primary"
@@ -102,28 +107,18 @@ const Sidebar = () => {
                 <img
                   src={user.profilePic || "/avatar.png"}
                   alt={user.fullName}
-                  className="
-                    h-9 w-9 sm:h-11 sm:w-11
-                    rounded-full object-cover
-                    ring-2 ring-primary/20
-                  "
+                  className="h-9 w-9 sm:h-11 sm:w-11 rounded-full object-cover ring-2 ring-primary/20"
                 />
                 <span
-                  className={`
-                    absolute bottom-0 right-0
-                    h-2.5 w-2.5 sm:h-3 sm:w-3
-                    rounded-full
-                    ring-2 ring-base-100
-                    ${isOnline ? "bg-green-500" : "bg-gray-400"}
-                  `}
+                  className={`absolute bottom-0 right-0 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ring-2 ring-base-100 ${
+                    isOnline ? "bg-green-500" : "bg-gray-400"
+                  }`}
                 />
               </div>
 
-              {/* User Info (hidden on mobile) */}
+              {/* User Info (desktop only) */}
               <div className="hidden lg:flex flex-col min-w-0">
-                <span className="font-medium truncate">
-                  {user.fullName}
-                </span>
+                <span className="font-medium truncate">{user.fullName}</span>
                 <span
                   className={`text-xs ${
                     isOnline
