@@ -2,6 +2,7 @@
 
 Chatify is a modern, full-stack real-time messaging application built with a clean UI and fast, responsive performance. It supports user authentication, one-to-one chat, online status, and real-time message delivery.
 
+Live Demo: https://chatify1-1z7e.onrender.com/
 ---
 
 ## 🚀 Features
