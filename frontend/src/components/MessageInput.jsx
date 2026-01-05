@@ -8,10 +8,19 @@ const MessageInput = () => {
 
   const { sendMessage, selectedUser, isSending } = useChatStore();
 
+  // ✅ Convert File → Base64
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     setImage(file);
   };
 
@@ -21,10 +30,17 @@ const MessageInput = () => {
     if (!text.trim() && !image) return;
     if (!selectedUser?._id) return;
 
+    let imageBase64 = null;
+
+    // 🔥 MAIN FIX
+    if (image) {
+      imageBase64 = await fileToBase64(image);
+    }
+
     await sendMessage({
       receiverId: selectedUser._id,
       text: text.trim(),
-      image,
+      image: imageBase64, // ✅ Base64 STRING
     });
 
     setText("");
@@ -57,12 +73,9 @@ const MessageInput = () => {
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center gap-2"
-      >
+      <form onSubmit={handleSubmit} className="flex items-center gap-2">
         {/* Image upload button */}
-        <label className="flex-shrink-0 p-2 rounded-full hover:bg-base-200 active:scale-95 transition cursor-pointer">
+        <label className="shrink-0 p-2 rounded-full hover:bg-base-200 active:scale-95 transition cursor-pointer">
           <input
             ref={fileRef}
             type="file"
@@ -99,7 +112,7 @@ const MessageInput = () => {
         <button
           type="submit"
           disabled={isSending}
-          className="flex-shrink-0 p-2 rounded-full bg-primary text-primary-content hover:bg-primary/90 active:scale-95 transition disabled:opacity-50"
+          className="shrink-0 p-2 rounded-full bg-primary text-primary-content hover:bg-primary/90 active:scale-95 transition disabled:opacity-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

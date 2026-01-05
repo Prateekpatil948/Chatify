@@ -6,6 +6,7 @@ import { getRecevierSocketId, io } from "../lib/socket.js";
 export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
+
     const filteredUsers = await User.find({
       _id: { $ne: loggedInUserId },
     }).select("-password");
@@ -42,8 +43,10 @@ export const sendMessage = async (req, res) => {
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
 
-    let imageUrl;
-    if (image) {
+    let imageUrl = null;
+
+    // ✅ SAFETY CHECK
+    if (image && typeof image === "string") {
       const uploadResponse = await cloudinary.uploader.upload(image);
       imageUrl = uploadResponse.secure_url;
     }
@@ -55,13 +58,12 @@ export const sendMessage = async (req, res) => {
       image: imageUrl,
     });
 
-    // todo: realtime functionality goes here => socket.io
-
     await newMessage.save();
 
-    const recevierId = getRecevierSocketId(receiverId);
-    if (recevierId) {
-      io.to(recevierId).emit("newMessage", newMessage);
+    // 🔴 realtime via socket.io
+    const receiverSocketId = getRecevierSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
     }
 
     res.status(201).json(newMessage);

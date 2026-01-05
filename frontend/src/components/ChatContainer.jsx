@@ -97,7 +97,7 @@ const ChatContainer = () => {
                 )}
 
                 {message.text && (
-                  <p className="text-sm leading-snug break-words">
+                  <p className="text-sm leading-snug wrap-break-word">
                     {message.text}
                   </p>
                 )}
