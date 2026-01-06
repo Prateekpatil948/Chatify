@@ -1,5 +1,4 @@
 import Navbar from "./components/Navbar";
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
@@ -13,29 +12,35 @@ import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "./store/useThemeStore";
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   const { theme } = useThemeStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-  console.log({ authUser });
 
-  if (isCheckingAuth && !authUser)
+  // ✅ Global auth loader (NO flicker)
+  if (isCheckingAuth) {
     return (
-      <div>
-        <Loader className="size-10 animate-spin" />
+      <div className="h-screen flex items-center justify-center bg-base-200">
+        <Loader className="size-10 animate-spin text-primary" />
       </div>
     );
+  }
 
   return (
     <div data-theme={theme} className="min-h-screen bg-base-200 pb-10 pt-16">
+      {/* Navbar only after auth check */}
       <Navbar />
+
       <Routes>
+        {/* 🏠 Home */}
         <Route
           path="/"
           element={authUser ? <HomePage /> : <Navigate to="/login" />}
         />
+
+        {/* 🔐 Auth */}
         <Route
           path="/signup"
           element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
@@ -44,11 +49,21 @@ const App = () => {
           path="/login"
           element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
-        <Route path="/settings" element={<SettingsPage />} />
+
+        {/* ⚙️ Settings (PROTECTED) */}
+        <Route
+          path="/settings"
+          element={authUser ? <SettingsPage /> : <Navigate to="/login" />}
+        />
+
+        {/* 👤 Profile */}
         <Route
           path="/profile"
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
+
+        {/* ❌ Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
       <Toaster />
