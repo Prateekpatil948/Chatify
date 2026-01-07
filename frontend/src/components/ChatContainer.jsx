@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { formatMessageTime } from "../lib/utils";
+import { X } from "lucide-react";
 
 const ChatContainer = () => {
   const {
@@ -18,6 +19,9 @@ const ChatContainer = () => {
 
   const { authUser } = useAuthStore();
   const endRef = useRef(null);
+
+  // ✅ Image modal state
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     if (!selectedUser?._id) return;
@@ -49,10 +53,37 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-base-200/50">
+    <div className="flex-1 flex flex-col h-full bg-base-200/50 relative">
       <ChatHeader />
 
-      {/* Messages */}
+      {/* 🖼 Image Preview Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-9999 bg-black/80 flex items-center justify-center px-4"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative max-w-full max-h-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-10 right-0 text-white hover:opacity-80"
+            >
+              <X size={28} />
+            </button>
+
+            <img
+              src={previewImage}
+              alt="Full view"
+              className="max-h-[85vh] max-w-[90vw] rounded-xl shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* 💬 Messages */}
       <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-3 sm:py-5 space-y-2 sm:space-y-3">
         {messages.length === 0 && (
           <p className="text-center text-sm text-base-content/60">
@@ -88,11 +119,13 @@ const ChatContainer = () => {
                     : "bg-base-100 border border-base-300 rounded-bl-md"
                 }`}
               >
+                {/* 🖼 Clickable Image */}
                 {message.image && (
                   <img
                     src={message.image}
                     alt="attachment"
-                    className="mb-2 max-w-full sm:max-w-xs rounded-xl"
+                    onClick={() => setPreviewImage(message.image)}
+                    className="mb-2 max-w-full sm:max-w-xs rounded-xl cursor-pointer hover:opacity-90 transition"
                   />
                 )}
 
