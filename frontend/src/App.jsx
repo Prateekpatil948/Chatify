@@ -50,11 +50,8 @@ const App = () => {
           element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
 
-        {/* ⚙️ Settings (PROTECTED) */}
-        <Route
-          path="/settings"
-          element={authUser ? <SettingsPage /> : <Navigate to="/login" />}
-        />
+        {/* ⚙️ Settings */}
+        <Route path="/settings" element={<SettingsPage />} />
 
         {/* 👤 Profile */}
         <Route
