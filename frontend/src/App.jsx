@@ -51,10 +51,7 @@ const App = () => {
         />
 
         {/* ⚙️ Settings */}
-        <Route
-          path="/settings"
-          <Route path="/settings" element={<SettingsPage />} />
-        />
+        <Route path="/settings" element={<SettingsPage />} />
 
         {/* 👤 Profile */}
         <Route
