@@ -16,6 +16,7 @@ const App = () => {
   const { theme } = useThemeStore();
 
   useEffect(() => {
+    // 🔐 Check auth on app load
     checkAuth();
   }, [checkAuth]);
 
